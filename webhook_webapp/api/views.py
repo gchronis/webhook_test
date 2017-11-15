@@ -3,13 +3,26 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 import json
+from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+import requests
+from ipaddress import ip_address, ip_network
 
 # Create your views here.
 
 @csrf_exempt
 def post(request):
+    # Verify if request came from GitHub
+    forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
+    client_ip_address = ip_address(forwarded_for)
+    whitelist = requests.get('https://api.github.com/meta').json()['hooks']
+
+    for valid_ip in whitelist:
+        if client_ip_address in ip_network(valid_ip):
+            break
+    else:
+        return HttpResponseForbidden('Permission denied.')
+
     print("I got some JSON data:")
-    print(request)
+    print(request.body)
     return HttpResponse('received payload')
