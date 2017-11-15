@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+import json
 
 # Create your views here.
 
 def post(request):
-    print(request.to_string)
+    print("I got some JSON data:")
+    print(request)
 
