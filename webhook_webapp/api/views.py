@@ -8,6 +8,7 @@ from django.shortcuts import render
 import json
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import requests
 from ipaddress import ip_address, ip_network
 
@@ -15,7 +16,7 @@ from django.conf import settings
 from django.utils.encoding import force_bytes
 
 # Create your views here.
-
+@require_POST
 @csrf_exempt
 def post(request):
     # Verify if request came from GitHub
